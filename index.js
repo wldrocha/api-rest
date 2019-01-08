@@ -27,7 +27,7 @@ app.get('/user/:userId', (req,res, next)=>{
 app.post('/user', (req,res, next)=>{
     //user.push('wlady2')
     console.log(req.body)
-    res.send({"mensaje": `quieres guardar y los usuarios son`})
+    res.status(200).send({"mensaje": `quieres guardar y los usuarios son`})
 })
 
 // solicitud put 
