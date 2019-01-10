@@ -1,6 +1,8 @@
 // se importan los middlewares
 const express = require('express')
 const bodyParser = require('body-parser')
+const mongoose = require('mongoose')
+
 // se instancia el middleware express en la constante app
 const app = express()
 //se añade la constante asignada y si no existe se asigna el puerto
@@ -13,34 +15,43 @@ app.use(bodyParser.json())
 
 // Solicitudes REST
 // Solicitud get que recibe un parametro y lo imprime en la respuesta
-app.get('/user', (req, res, next)=> {
+app.get('/product', (req, res, next)=> {
     res.send({"mensaje": 'Enlista los usuarios'})
 })
 
 // solicitud get con parametros
-app.get('/user/:userId', (req,res, next)=>{
-    let userId = parseInt(req.params.userId)
-    res.status(200).send({"mensaje":`El usuario seleccionado es ${userId}`})
+app.get('/product/:productId', (req,res, next)=>{
+    let productId = parseInt(req.params.productId)
+    res.status(200).send({"mensaje":`El usuario seleccionado es ${productId}`})
 })
 
 // solicitud post
-app.post('/user', (req,res, next)=>{
+app.post('/product', (req,res, next)=>{
     //user.push('wlady2')
     console.log(req.body)
     res.status(200).send({"mensaje": `quieres guardar y los usuarios son`})
 })
 
 // solicitud put 
-app.put('/user/:userId', (req, res, next) =>{
+app.put('/product/:productId', (req, res, next) =>{
     res.send({"mensaje": 'Actualizas todo'})
 })
 
 // solicitud patch
-app.patch('/user/:userId', (req, res, next)=>{
+app.patch('/product/:productId', (req, res, next)=>{
     res.status(200).send({"mensaje": 'Actualiza por partes'})
 })
 
+mongoose.connect('mongodb://localhost:27017/shop',{ useNewUrlParser: true },(err, res) =>{
+    if(err) {
+        return console.log(`Error al conectar a la base de datos : ${err}`)
+    }
+    console.log('Conexion a la base de datos a sido establecida...')
+    
 // El puerto en que debe escuchar y el mensaje que mostrará cuando está corriendo la app
-app.listen(port, ()=>{
-    console.log(`API REST corriendo en https://localhost:${port}`) 
+    app.listen(port, ()=>{
+        console.log(`API REST corriendo en https://localhost:${port}`) 
+    })
 })
+
+
