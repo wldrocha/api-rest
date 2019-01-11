@@ -10,7 +10,6 @@ const app = express()
 //se añade la constante asignada y si no existe se asigna el puerto
 const port = process.env.PORT || 3000
 
-// 
 app.use(bodyParser.urlencoded({extended : false}))
 //Admitir peticiones con cuerpo en formato JSON
 app.use(bodyParser.json())
@@ -67,13 +66,32 @@ app.post('/product', (req,res)=>{
 
 // solicitud put 
 app.put('/product/:productId', (req, res) =>{
-    res.send({mensaje: 'Actualizas todo'})
+    // Se recupera el id de los parametros
+   let productId = req.params.productId
+    // Se asigna todos los valores a actualizar
+   let update = req.body
+    //Busca el producto por Id y lo actualiza
+   Product.findByIdAndUpdate(productId, update, (err, productUpdated) =>{
+       // si existe un error al guardar el producto devuelve esto
+       if(err) res.status(500).send({mensaje: `Error al conectar a la Base de datos : ${err}`})
+        //si el producto es actualizado devuelve el producto
+       res.status(200).send({ mensaje: productUpdated})
+   })
 })
 
-// solicitud patch
-app.patch('/product/:productId', (req, res)=>{
-    res.status(200).send({mensaje: 'Actualiza por partes'})
+// solicitud delete
+app.delete('/product/:productId', (req, res)=>{
+    // Se recupera el id de los parametros
+    let productId = req.params.productId
+    // Se busca el producto a actualizar y se intenta eliminar
+    Product.findByIdAndDelete(productId,(err, product)=>{
+        // Se informa de un error si no se puede eliminar
+        if(err) res.status(500).send(`Error al eliminar el producto ${err}`)
+        // si el producto es eliminado se devuelve el mensaje satisfactorio
+        res.status(200).send({ mensaje:  'Producto eliminado satisfactoriamente'})
+    })
 })
+
 
 mongoose.connect('mongodb://localhost:27017/shop',{ useNewUrlParser: true },(err, res) =>{
     if(err) {
