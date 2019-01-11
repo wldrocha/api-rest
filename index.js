@@ -18,13 +18,13 @@ app.use(bodyParser.json())
 // Solicitudes REST
 // Solicitud get que recibe un parametro y lo imprime en la respuesta
 app.get('/product', (req, res)=> {
-    product.find({},(err,products)=>{
+    Product.find({},(err,products)=>{
         // pinta un error si no se conecta a la bd
         if(err) return res.status(500).send({mensaje: `Error al conectar a la Base de datos : ${err}`})
         // devuelve error si no encuentra los productos
         if(!products) return res.status(404).send({mensaje: 'No existen productos registrados'})
         // devuelve los productos encontrados
-        res.send(200, {products})
+        res.status(200).send({products})
     })
 })
 
@@ -38,14 +38,8 @@ app.get('/product/:productId', (req,res)=>{
         // devuelve un error si no encuentra el producto
         if(!product) return res.status(404).send({mensaje: 'No existen el producto'})
         // devuelve los productos encontrados
-        res.send(200, {product})
+        res.status(200).send({product})
     })
-
-    if(err) return res.status(500).send({mensaje: `Error al conectar a la Base de datos : ${err}`})
-        // devuelve error si no encuentra los productos
-        if(!products) return res.status(404).send({mensaje: 'No existen productos registrados'})
-        // devuelve los productos encontrados
-        res.send(200, {product})
 })
 
 // solicitud post
