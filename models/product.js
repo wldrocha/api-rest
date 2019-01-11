@@ -1,6 +1,7 @@
 const mongoose = require('mongoose')
 const Schema = mongoose.Schema
 
+
 const ProductSchema = Schema({
     name: String,
     picture: String,
@@ -9,4 +10,5 @@ const ProductSchema = Schema({
     description: String
 })
 
-moongose.model('Product', ProductSchema)
+// Se exporta para poder usar en otra parte de la app y se coloca como modelo de mongoose
+module.exports = mongoose.model('Product', ProductSchema)
