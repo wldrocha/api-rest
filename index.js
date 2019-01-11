@@ -3,6 +3,8 @@ const express = require('express')
 const bodyParser = require('body-parser')
 const mongoose = require('mongoose')
 
+const Product = require('./models/product')
+
 // se instancia el middleware express en la constante app
 const app = express()
 //se añade la constante asignada y si no existe se asigna el puerto
@@ -16,30 +18,42 @@ app.use(bodyParser.json())
 // Solicitudes REST
 // Solicitud get que recibe un parametro y lo imprime en la respuesta
 app.get('/product', (req, res, next)=> {
-    res.send({"mensaje": 'Enlista los usuarios'})
+    res.send({mensaje: 'Enlista los usuarios'})
 })
 
 // solicitud get con parametros
 app.get('/product/:productId', (req,res, next)=>{
     let productId = parseInt(req.params.productId)
-    res.status(200).send({"mensaje":`El usuario seleccionado es ${productId}`})
+    res.status(200).send({mensaje:`El usuario seleccionado es ${productId}`})
 })
 
 // solicitud post
 app.post('/product', (req,res, next)=>{
-    //user.push('wlady2')
+
+    console.log('POST api/product')
     console.log(req.body)
-    res.status(200).send({"mensaje": `quieres guardar y los usuarios son`})
+    let product = new Product()
+    product.name = req.body.name
+    product.picture = req.body.picture
+    product.price  = req.body.price
+    product.category = req.body.category
+    product.description = req.body.description
+
+    product.save((err,productStored)=>{
+        if(err) res.status(500).send({mensaje: `Error al conectar a la Base de datos : ${err}`})
+
+        res.status(200).send({product: productStored})
+    })
 })
 
 // solicitud put 
 app.put('/product/:productId', (req, res, next) =>{
-    res.send({"mensaje": 'Actualizas todo'})
+    res.send({mensaje: 'Actualizas todo'})
 })
 
 // solicitud patch
 app.patch('/product/:productId', (req, res, next)=>{
-    res.status(200).send({"mensaje": 'Actualiza por partes'})
+    res.status(200).send({mensaje: 'Actualiza por partes'})
 })
 
 mongoose.connect('mongodb://localhost:27017/shop',{ useNewUrlParser: true },(err, res) =>{
