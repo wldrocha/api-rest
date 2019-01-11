@@ -17,42 +17,67 @@ app.use(bodyParser.json())
 
 // Solicitudes REST
 // Solicitud get que recibe un parametro y lo imprime en la respuesta
-app.get('/product', (req, res, next)=> {
-    res.send({mensaje: 'Enlista los usuarios'})
+app.get('/product', (req, res)=> {
+    product.find({},(err,products)=>{
+        // pinta un error si no se conecta a la bd
+        if(err) return res.status(500).send({mensaje: `Error al conectar a la Base de datos : ${err}`})
+        // devuelve error si no encuentra los productos
+        if(!products) return res.status(404).send({mensaje: 'No existen productos registrados'})
+        // devuelve los productos encontrados
+        res.send(200, {products})
+    })
 })
 
 // solicitud get con parametros
-app.get('/product/:productId', (req,res, next)=>{
-    let productId = parseInt(req.params.productId)
-    res.status(200).send({mensaje:`El usuario seleccionado es ${productId}`})
+app.get('/product/:productId', (req,res)=>{
+    let productId = req.params.productId
+    
+    Product.findById(productId, (err, product)=>{
+         // pinta un error si no se conecta a la bd
+        if(err) return res.status(500).send({mensaje: `Error al conectar a la Base de datos : ${err}`})
+        // devuelve un error si no encuentra el producto
+        if(!product) return res.status(404).send({mensaje: 'No existen el producto'})
+        // devuelve los productos encontrados
+        res.send(200, {product})
+    })
+
+    if(err) return res.status(500).send({mensaje: `Error al conectar a la Base de datos : ${err}`})
+        // devuelve error si no encuentra los productos
+        if(!products) return res.status(404).send({mensaje: 'No existen productos registrados'})
+        // devuelve los productos encontrados
+        res.send(200, {product})
 })
 
 // solicitud post
-app.post('/product', (req,res, next)=>{
-
+app.post('/product', (req,res)=>{
+    // imprime la dirección en la consola
     console.log('POST api/product')
+    // imprime la solicitud enviada
     console.log(req.body)
+    // se instancia un nuevo objeto de SchemeProduct
     let product = new Product()
+    // se asigna los valores de la solicutd recibida a Scheme Products para guardar en la bd
     product.name = req.body.name
     product.picture = req.body.picture
     product.price  = req.body.price
     product.category = req.body.category
     product.description = req.body.description
-
+    // Se intenta guardar el producto
     product.save((err,productStored)=>{
+        // si existe un error al guardar el producto devuelve esto
         if(err) res.status(500).send({mensaje: `Error al conectar a la Base de datos : ${err}`})
-
+        // Si el producto es guardado correctamente devuelve en consola sus datos
         res.status(200).send({product: productStored})
     })
 })
 
 // solicitud put 
-app.put('/product/:productId', (req, res, next) =>{
+app.put('/product/:productId', (req, res) =>{
     res.send({mensaje: 'Actualizas todo'})
 })
 
 // solicitud patch
-app.patch('/product/:productId', (req, res, next)=>{
+app.patch('/product/:productId', (req, res)=>{
     res.status(200).send({mensaje: 'Actualiza por partes'})
 })
 
