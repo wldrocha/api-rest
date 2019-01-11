@@ -18,7 +18,9 @@
   },
   "homepage": "https://github.com/wldrocha/api-rest#readme",
   "dependencies": {
+    "bcrypt-nodejs": "0.0.3",
     "body-parser": "^1.18.3",
+    "crypto": "^1.0.1",
     "express": "^4.16.4",
     "mongoose": "^5.4.2"
   },
