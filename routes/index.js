@@ -1,4 +1,5 @@
 const express = require('express')
+const auth = require('../middlewares/auth')
 const api = express.Router()
 // se importa el controlador de los productos
 const productCtrl = require('../controllers/product')
@@ -14,5 +15,8 @@ api.post('/product',productCtrl.saveProduct)
 api.put('/product/:productId',productCtrl.updateProduct)
 // solicitud delete
 api.delete('/product/:productId',productCtrl.deleteProduct)
+api.get('/Private', auth.isAuth, (req, res)=>{
+    res.status(200).send({ mensaje: 'Tienes acceso'})
+})
 
 module.exports = api
