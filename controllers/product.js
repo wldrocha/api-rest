@@ -25,7 +25,7 @@ function getProduct(req, res){
     })
 }
 
-function saveProduct(eq, res){
+function saveProduct(req, res){
      // imprime la dirección en la consola
      console.log('POST api/product')
      // imprime la solicitud enviada

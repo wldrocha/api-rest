@@ -17,5 +17,3 @@ mongoose.connect(config.db,{ useNewUrlParser: true },(err, res) =>{
         console.log(`API REST corriendo en https://localhost:${config.port}`) 
     })
 })
-
-

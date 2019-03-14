@@ -15,8 +15,10 @@ api.post('/product',productCtrl.saveProduct)
 api.put('/product/:productId',productCtrl.updateProduct)
 // solicitud delete
 api.delete('/product/:productId',productCtrl.deleteProduct)
-api.get('/Private', auth.isAuth, (req, res)=>{
+api.get('/private', auth, (req, res)=>{
     res.status(200).send({ mensaje: 'Tienes acceso'})
 })
 
 module.exports = api
+
+//nota en esto revisar el ultimo metodo get

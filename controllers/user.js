@@ -1,4 +1,3 @@
-const mongoose = require('mongoose')
 const  User = require('../models/user')
 const service = require('../service')
 
@@ -16,7 +15,15 @@ function signUp (req, res){
 }
 
 function signIn(req, res){
-
+    User.find({email: req.body.email}, (err, user)=>{
+        if(err) return res.status.(500).send({ mensaje: err})
+        if(!user) return res.status(404).send({mensaje: 'no existe el usuario'})
+    })
+    req.user = user
+    res.status(200).send({
+        mensaje: 'Te logueaste correctamente',
+        token: service.createToken(user)
+    })
 }
 
 module.exports = {
