@@ -1,0 +1,4 @@
+ // -respaldo
+mongodump --db shop --out ./db/mongoBackup
+ // -restaurar
+mongorestore -d shop ./db/mongoBackup/shop
