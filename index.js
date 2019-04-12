@@ -1,9 +1,22 @@
 // Se importa mongoose para la bd
 const mongoose = require('mongoose')
-// Se importa las rutas
-const app = require('./app')
 // Se importan las configuraciones
 const config = require('./config')
+// se importan los middlewares
+const express = require('express')
+
+// se instancia el middleware express en la constante app
+const app = express()
+// importa las rutas para navegar con las solicitudes Rest
+const api = require('./routes')
+
+
+app.use(express.urlencoded({extended : false}))
+//Admitir peticiones con cuerpo en formato JSON
+app.use(express.json())
+
+app.use('/api', api)
+
 
 // Se conecta a la bd
 mongoose.connect(config.db,{ useNewUrlParser: true },(err, res) =>{
