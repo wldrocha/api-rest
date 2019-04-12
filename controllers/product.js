@@ -2,26 +2,28 @@
 const Product = require('../models/product')
 
 function getProducts(req, res){
-    Product.find({},(err,products)=>{
-        // pinta un error si no se conecta a la bd
-        if(err) return res.status(500).send({mensaje: `Error al conectar a la Base de datos : ${err}`})
-        // devuelve error si no encuentra los productos
-        if(!products) return res.status(404).send({mensaje: 'No existen productos registrados'})
+    Product.find({})
+    .then(products =>{
+        
         // devuelve los productos encontrados
-        res.status(200).send({products})
+        if(products.length>0) res.status(200).send({products})
+        // devuelve error si no encuentra los productos
+        res.status(404).send({message: 'Products are not found'})
+    }).catch (err =>{
+        res.status(500).send({message: `Error al conectar a la Base de datos : ${err}`})
     })
 }
 
 function getProduct(req, res){
     let productId = req.params.productId
-    
-    Product.findById(productId, (err, product)=>{
-         // pinta un error si no se conecta a la bd
-        if(err) return res.status(500).send({mensaje: `Error al conectar a la Base de datos : ${err}`})
-        // devuelve un error si no encuentra el producto
-        if(!product) return res.status(404).send({mensaje: 'No existen el producto'})
-        // devuelve los productos encontrados
-        res.status(200).send({product})
+
+    Product.find({_id: productId})
+    .then(product =>{
+        console.log(product.length)
+        if(product.length>0) res.status(200).send({product})
+        res.status(404).send({message: 'Ese producto no existe'})
+    }).catch (err =>{
+        res.status(500).send({message: `Error al conectar a la Base de datos : ${err}`})
     })
 }
 
@@ -31,45 +33,49 @@ function saveProduct(req, res){
      // imprime la solicitud enviada
      console.log(req.body)
      // se instancia un nuevo objeto de SchemeProduct
-     let product = new Product()
-     // se asigna los valores de la solicutd recibida a Scheme Products para guardar en la bd
-     product.name = req.body.name
-     product.picture = req.body.picture
-     product.price  = req.body.price
-     product.category = req.body.category
-     product.description = req.body.description
+     let newProduct = new Product(req.body)
      // Se intenta guardar el producto
-     product.save((err,productStored)=>{
-         // si existe un error al guardar el producto devuelve esto
-         if(err) res.status(500).send({mensaje: `Error al conectar a la Base de datos : ${err}`})
+     newProduct.save()
+     .then( product =>{
          // Si el producto es guardado correctamente devuelve en consola sus datos
-         res.status(200).send({product: productStored})
+         res.status(200).send({product})
+     }).catch( err =>{
+         // si existe un error al guardar el producto devuelve esto
+         res.status(500).send({message: `Error al conectar a la Base de datos : ${err}`})
      })
 }
 
 function updateProduct(req, res){
-    // Se recupera el id de los parametros
-   let productId = req.params.productId
-   // Se asigna todos los valores a actualizar
-  let update = req.body
-   //Busca el producto por Id y lo actualiza
-  Product.findByIdAndUpdate(productId, update, (err, productUpdated) =>{
-      // si existe un error al guardar el producto devuelve esto
-      if(err) res.status(500).send({mensaje: `Error al conectar a la Base de datos : ${err}`})
-       //si el producto es actualizado devuelve el producto
-      res.status(200).send({ mensaje: productUpdated})
-  })
+// Se recupera el id de los parametros
+    let productId = req.params.productId
+// Se asigna todos los valores a actualizar
+    let update = req.body
+//Busca el producto por Id y lo actualiza
+Product.findByIdAndUpdate(productId, update)
+//si el producto es actualizado devuelve el producto
+    .then(product =>{
+        res.status(200).send({product})
+    }).catch(err =>{
+// si existe un error al guardar el producto devuelve esto
+        res.status(500).send({message: `Error al conectar a la Base de datos : ${err}`})
+    })
+    
+
 }
 
 function deleteProduct(req, res){
     // Se recupera el id de los parametros
     let productId = req.params.productId
     // Se busca el producto a actualizar y se intenta eliminar
-    Product.findByIdAndDelete(productId,(err, product)=>{
+    Product.findByIdAndDelete(productId)
+    .then(product =>{
+        // si el producto es eliminado se devuelve el message satisfactorio
+        res.status(200).send({ message:  'Producto eliminado satisfactoriamente'})
+
+    }).catch(err =>{
         // Se informa de un error si no se puede eliminar
-        if(err) res.status(500).send(`Error al eliminar el producto ${err}`)
-        // si el producto es eliminado se devuelve el mensaje satisfactorio
-        res.status(200).send({ mensaje:  'Producto eliminado satisfactoriamente'})
+        res.status(500).send(`Error al eliminar el producto ${err}`)
+
     })
 }
 

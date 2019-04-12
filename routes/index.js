@@ -6,7 +6,7 @@ const productCtrl = require('../controllers/product')
 
 // Solicitudes REST
 // Solicitud get que recibe un parametro y lo imprime en la respuesta
-api.get('/product',productCtrl.getProducts)
+api.get('/products',productCtrl.getProducts)
 // solicitud get con parametros
 api.get('/product/:productId',productCtrl.getProduct)
 // solicitud post
