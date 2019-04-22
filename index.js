@@ -4,12 +4,14 @@ const mongoose = require('mongoose')
 const config = require('./config')
 // se importan los middlewares
 const express = require('express')
+const cors = require('cors')
 
 // se instancia el middleware express en la constante app
 const app = express()
 // importa las rutas para navegar con las solicitudes Rest
 const api = require('./routes')
 
+app.use(express.static(`${__dirname}/public`))
 
 app.use(express.urlencoded({extended : false}))
 //Admitir peticiones con cuerpo en formato JSON
@@ -17,6 +19,12 @@ app.use(express.json())
 
 app.use('/api', api)
 
+/*Defaul 404 - CORS*/
+app.use(cors(/* {
+    origin: ["*"], //http://localhost:3001
+    methods: ["*"],
+    allowedHeaders: ["*"]
+} */));
 
 // Se conecta a la bd
 mongoose.connect(config.db,{ useNewUrlParser: true },(err, res) =>{
