@@ -1,39 +1,32 @@
 // Se invoca el modelo
 const Product = require('../models/product')
-
-function getProducts(req, res){
-    Product.find({})
-    .then(products =>{
-        
-        // devuelve los productos encontrados
-        if(products.length>0) res.status(200).send({products})
+const getProducts = async(req, res)=>{
+    try{
+        const products = await Product.find({});
+        if(products.length>0) res.status(200).json({products})
         // devuelve error si no encuentra los productos
-        res.status(404).send({message: 'Products are not found'})
-    }).catch (err =>{
-        res.status(500).send({message: `Error al conectar a la Base de datos : ${err}`})
-    })
+        res.status(404).json({message: 'Products are not found'})
+    }catch (err){
+        res.status(500).json({message: `Error al conectar a la Base de datos : ${err}`})
+    }
 }
 
-function getProduct(req, res){
-    let productId = req.params.productId
+const getProduct = async (req, res)=>{
+    const productId = req.params.productId
+    try{
+        const product = await Product.find({_id: productId})
+        if(product.length>0) res.status(200).json({product})
+        res.status(404).json({message: 'Product are not found'})
+    }catch (err){
+        res.status(500).json({message: `Error al conectar a la Base de datos : ${err}`})
+    }
 
-    Product.find({_id: productId})
-    .then(product =>{
-        console.log(product.length)
-        if(product.length>0) res.status(200).send({product})
-        res.status(404).send({message: 'Ese producto no existe'})
-    }).catch (err =>{
-        res.status(500).send({message: `Error al conectar a la Base de datos : ${err}`})
-    })
+    
 }
 
-function saveProduct(req, res){
-     // imprime la dirección en la consola
-     console.log('POST api/product')
-     // imprime la solicitud enviada
-     console.log(req.body)
-     // se instancia un nuevo objeto de SchemeProduct
-     let newProduct = new Product(req.body)
+const saveProduct= async(req, res)=>{
+
+     const newProduct = new Product(req.body)
      // Se intenta guardar el producto
      newProduct.save()
      .then( product =>{
